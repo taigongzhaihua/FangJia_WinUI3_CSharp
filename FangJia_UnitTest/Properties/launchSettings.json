@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FangJia_UnitTest (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FangJia_UnitTest (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
