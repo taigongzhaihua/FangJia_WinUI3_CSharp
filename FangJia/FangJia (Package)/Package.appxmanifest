@@ -10,7 +10,7 @@
   <Identity
     Name="FangJia"
     Publisher="CN=zzy94"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="31d6f6bc-c97f-4891-92f7-affa3556a167" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

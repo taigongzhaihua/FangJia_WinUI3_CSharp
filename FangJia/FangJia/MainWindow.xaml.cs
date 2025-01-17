@@ -1,3 +1,6 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using FangJia.Pages;
+using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -5,13 +8,11 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Graphics;
-using AboutPage = FangJia.Pages.AboutPage;
-using HomePage = FangJia.Pages.HomePage;
-using SettingsPage = FangJia.Pages.SettingsPage;
+#pragma warning disable CA1416
+
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -26,10 +27,8 @@ namespace FangJia;
 public sealed partial class MainWindow
 {
     private readonly AppWindow _appWindow;
-    private bool _isFullScreen;
-    private ObservableCollection<string> _pageHead;
+    internal MainPageViewModel ViewModel;
 
-    [SuppressMessage("Interoperability", "CA1416:验证平台兼容性", Justification = "<挂起>")]
     public MainWindow()
     {
         InitializeComponent();
@@ -37,6 +36,7 @@ public sealed partial class MainWindow
         // 假设 "this" 是一个 XAML 窗口。在不使用 WinUI 3 1.3 或更高版本的项目中，使用互操作 API 获取 AppWindow。
         // WinUI 3 1.3 或更高版本，使用互操作 API 获取 AppWindow。
 
+        ViewModel = new MainPageViewModel();
         _appWindow = AppWindow;
         _appWindow.Changed += AppWindow_Changed;
         Activated += MainWindow_Activated;
@@ -49,14 +49,24 @@ public sealed partial class MainWindow
             _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         }
         SetTitleBar(AppTitleBar);
+#if WINDOWS10_0_19041_0_OR_GREATER
         TitleBarTextBlock.Text = AppInfo.Current.DisplayInfo.DisplayName;
+#endif
         // 设置窗口图标
         _appWindow.SetIcon("Assets/StoreLogo.ico");
+
+        // 设置窗口标题栏按钮颜色
+        _appWindow.TitleBar.ButtonForegroundColor =
+
+            ((SolidColorBrush)Application.Current.Resources["WindowCaptionForeground"]).Color;
+
+        _appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
     }
 
     private void AppTitleBar_Loaded(object sender, RoutedEventArgs e)
     {
         if (ExtendsContentIntoTitleBar)
+
         {
             // Set the initial interactive regions.
             // 设置初始交互区域。
@@ -66,7 +76,9 @@ public sealed partial class MainWindow
 
     private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
     {
+
         if (ExtendsContentIntoTitleBar)
+
         {
             // Update interactive regions if the size of the window changes.
             // 如果窗口大小发生变化，更新交互区域。
@@ -139,7 +151,7 @@ public sealed partial class MainWindow
                 sender.TitleBar.ResetToDefault();
                 sender.TitleBar.ExtendsContentIntoTitleBar = true;
                 _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-                _isFullScreen = false;
+                ViewModel.IsFullScreen = false;
                 break;
 
             case AppWindowPresenterKind.FullScreen:
@@ -148,7 +160,7 @@ public sealed partial class MainWindow
 
                 sender.TitleBar.ExtendsContentIntoTitleBar = true;
                 _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Collapsed;
-                _isFullScreen = true;
+                ViewModel.IsFullScreen = true;
                 break;
 
             case AppWindowPresenterKind.Overlapped:
@@ -156,17 +168,16 @@ public sealed partial class MainWindow
                 AppTitleBar.Visibility = Visibility.Visible;
                 sender.TitleBar.ExtendsContentIntoTitleBar = true;
                 _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-                _isFullScreen = false;
+                ViewModel.IsFullScreen = false;
                 break;
 
             case AppWindowPresenterKind.Default:
             default:
                 // 使用默认的系统标题栏。
-
                 sender.TitleBar.ResetToDefault();
                 sender.TitleBar.ExtendsContentIntoTitleBar = true;
                 _appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-                _isFullScreen = false;
+                ViewModel.IsFullScreen = false;
                 break;
         }
     }
@@ -176,6 +187,8 @@ public sealed partial class MainWindow
         if (args.IsSettingsSelected)
         {
             ContentFrame.Navigate(typeof(SettingsPage));
+            ViewModel.PageHead.Clear();
+            ViewModel.PageHead.Add(new Folder { Name = "设置" });
             return;
         }
         var selectedTag = args.SelectedItemContainer.Tag as string;
@@ -184,9 +197,18 @@ public sealed partial class MainWindow
         {
             case "HomePage":
                 ContentFrame.Navigate(typeof(HomePage));
+                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
+                ViewModel.PageHead.Add(new Folder { Name = "首页" });
+                break;
+            case "DataPage":
+                ContentFrame.Navigate(typeof(DataPage));
+                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
+                ViewModel.PageHead.Add(new Folder { Name = "数据" });
                 break;
             case "AboutPage":
                 ContentFrame.Navigate(typeof(AboutPage));
+                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
+                ViewModel.PageHead.Add(new Folder { Name = "关于" });
                 break;
         }
     }
@@ -201,7 +223,7 @@ public sealed partial class MainWindow
     // 切换窗口显示模式
     private void FullScreen(object sender, RoutedEventArgs e)
     {
-        _appWindow.SetPresenter(_isFullScreen
+        _appWindow.SetPresenter(ViewModel.IsFullScreen
             ? AppWindowPresenterKind.Default
             : AppWindowPresenterKind.FullScreen);
     }
@@ -215,5 +237,35 @@ public sealed partial class MainWindow
                 : new Thickness(48, 0, 0, 0)
         };
     }
+    private void BreadcrumbBar2_ItemClicked(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
+    {
+        var items = PageTitleBreadcrumbBar.ItemsSource as ObservableCollection<Folder>;
+        for (var i = items!.Count - 1; i >= args.Index + 1; i--)
+        {
+            items.RemoveAt(i);
+        }
+    }
+
+    private void NavigationViewControl_OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+    {
+        // 当 NavigationView 的返回按钮被点击时，执行 Frame 的返回操作
+        if (ContentFrame.CanGoBack)
+        {
+            ContentFrame.GoBack();
+        }
+    }
 }
+#pragma warning disable MVVMTK0045
+internal partial class MainPageViewModel : ObservableObject
+{
+    [ObservableProperty] private bool _isFullScreen;
+    [ObservableProperty] private ObservableCollection<Folder> _pageHead = [];
+}
+#pragma warning restore MVVMTK0045
+
+public class Folder
+{
+    public string? Name { get; set; }
+}
+
 

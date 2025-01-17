@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+#pragma warning disable CA1416
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +27,7 @@ public partial class App
     {
         _window = new MainWindow();
         _window.Activate();
+
     }
 
     private Window? _window;

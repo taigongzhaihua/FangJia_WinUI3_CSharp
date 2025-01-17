@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="FangJia.Pages.AboutPage"
+    x:Class="FangJia.Pages.DataPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,6 +9,12 @@
     Background="{StaticResource ControlAltFillColorTransparentBrush}">
 
     <Grid>
-        <TextBlock Text="关于" />
+        <NavigationView PaneDisplayMode="Top">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="方剂" />
+                <NavigationViewItem Content="药物" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="DataFrame"/>
+        </NavigationView>
     </Grid>
 </Page>

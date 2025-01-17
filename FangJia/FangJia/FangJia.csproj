@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+	<Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.0.1" />
+	<PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -9,13 +10,23 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
     <Nullable>enable</Nullable>
+	  <NoWarn>
+		  0108;   <!-- 'x' hides inherited member 'y'. Use the new keyword if hiding was intended. -->
+		  8305;    <!-- 'x' is for evaluation purposes only and is subject to change or removal in future updates. -->
+		  NU1701;
+          IDE0079;
+          NU1702;
+
+	  </NoWarn>
+	  <MSBuildWarningsAsMessages>
+		  WMC1501 <!-- x is for evaluation purposes only and is subject to change or removal in future updates. -->
+	  </MSBuildWarningsAsMessages>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Assets\StoreLogo.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="About\AboutPage.xaml" />
+    <None Remove="Assets\StoreLogo.ico" />
     <None Remove="Home\HomePage.xaml" />
+    <None Remove="Pages\DataPage.xaml" />
     <None Remove="Settings\SettingPage.xaml" />
   </ItemGroup>
 
@@ -24,18 +35,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ColorCode.WinUI" Version="2.0.15" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.2.241112-preview1" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.241112-preview1" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.241112-preview1" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.241112-preview1" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250109001-experimental2" />
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />
-    <PackageReference Include="Uno.CommunityToolkit.WinUI" Version="7.1.204" />
-    <PackageReference Include="Uno.Toolkit.WinUI" Version="6.5.0-dev.88" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\StoreLogo.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Update="Assets\StoreLogo.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Page Update="Pages\DataPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
@@ -54,10 +72,6 @@
     <Page Update="Setting\SettingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\" />
   </ItemGroup>
 
     <!-- Publish Properties -->

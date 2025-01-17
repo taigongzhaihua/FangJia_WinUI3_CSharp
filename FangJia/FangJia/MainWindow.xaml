@@ -6,19 +6,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="using:FangJia"
         xmlns:converters="using:FangJia.Converters"
         mc:Ignorable="d"
-        Title="方家" 
-        >
+        Title="方家">
 
     <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
 
@@ -38,13 +38,13 @@
                 <ColumnDefinition x:Name="TitleColumn"
                                   Width="Auto" />
                 <ColumnDefinition x:Name="LeftDragColumn"
-                                  Width="*"/>
+                                  Width="*" />
                 <ColumnDefinition x:Name="RightDragColumn"
-                                  Width="*"/>
+                                  Width="*" />
                 <ColumnDefinition x:Name="AccountColumn"
                                   Width="Auto" />
                 <ColumnDefinition x:Name="FullScreenColumn"
-                                  Width="Auto"/>
+                                  Width="Auto" />
                 <ColumnDefinition x:Name="RightPaddingColumn"
                                   Width="0" />
             </Grid.ColumnDefinitions>
@@ -66,13 +66,13 @@
             <PersonPicture x:Name="PersonPic"
                            Grid.Column="5"
                            Height="32"
-                           Margin="0,0,16,0" 
-                           ToolTipService.ToolTip="用户"/>
+                           Margin="0,0,16,0"
+                           ToolTipService.ToolTip="用户" />
             <Button Grid.Column="6"
                     Click="FullScreen"
                     x:Name="FullScreenButton"
                     ToolTipService.ToolTip="全屏">
-                <FontIcon Glyph="&#xE740;" FontSize="14"/>
+                <FontIcon Glyph="&#xE740;" FontSize="14" />
             </Button>
         </Grid>
 
@@ -81,22 +81,24 @@
                         IsPaneToggleButtonVisible="True"
                         IsSettingsVisible="True"
                         IsTitleBarAutoPaddingEnabled="True"
-                        IsTabStop="False"
                         SelectionChanged="NavigationView_SelectionChanged"
                         Loaded="NavigationView_Loaded"
                         Grid.Column="0" Grid.ColumnSpan="2"
                         DisplayModeChanged="OnPaneDisplayModeChanged"
-                        IsPaneOpen="False">
+                        IsPaneOpen="False"
+                        IsBackEnabled="{Binding ElementName=ContentFrame,Path=CanGoBack}"
+                        BackRequested="NavigationViewControl_OnBackRequested">
             <NavigationView.Resources>
                 <!--  This top margin is the height of the custom titleBar  -->
                 <!-- ReSharper disable Xaml.RedundantResource -->
                 <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
                 <Thickness x:Key="NavigationViewMinimalContentMargin">0,48,0,0</Thickness>
                 <Thickness x:Key="NavigationViewContentGridBorderThickness">1,1,0,0</Thickness>
+                <Thickness x:Key="NavigationViewHeaderMargin">32,16,0,12</Thickness>
                 <!--  This is the rounded corner on the Top left of the L Pattern  -->
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,0</CornerRadius>
                 <!-- ReSharper restore Xaml.RedundantResource -->
-                <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             </NavigationView.Resources>
             <NavigationView.AutoSuggestBox>
                 <AutoSuggestBox
@@ -117,22 +119,44 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="首页"
                                     Icon="Home"
-                                    Tag="HomePage" 
-                                    />
-                
+                                    Tag="HomePage" />
+                <NavigationViewItem Content="数据"
+                                    Icon="Document"
+                                    Tag="DataPage">
+                </NavigationViewItem>
             </NavigationView.MenuItems>
-            <NavigationView.PaneFooter>
+            <NavigationView.Header>
+                <Grid>
+                    <BreadcrumbBar x:Name="PageTitleBreadcrumbBar"
+                                   ItemsSource="{x:Bind ViewModel.PageHead}"
+                                   ItemClicked="BreadcrumbBar2_ItemClicked"
+                                   VerticalAlignment="Center">
+                        <BreadcrumbBar.ItemTemplate>
+                            <DataTemplate x:DataType="l:Folder">
+                                <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding Name}">
+                                    <BreadcrumbBarItem.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        </DataTemplate>
+                                    </BreadcrumbBarItem.ContentTemplate>
+                                </BreadcrumbBarItem>
+                            </DataTemplate>
+                        </BreadcrumbBar.ItemTemplate>
+                    </BreadcrumbBar>
+                </Grid>
 
-            </NavigationView.PaneFooter>
+            </NavigationView.Header>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Content="关于"
-                                    Tag="AboutPage" >
+                                    Tag="AboutPage">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE946;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItemSeparator/>
+                <NavigationViewItemSeparator />
             </NavigationView.FooterMenuItems>
+
+
             <Frame x:Name="ContentFrame" />
         </NavigationView>
     </Grid>

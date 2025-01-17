@@ -11,6 +11,7 @@
                 <!-- 其他合并的字典在这里 -->
             </ResourceDictionary.MergedDictionaries>
             <!-- 其他应用资源在这里 -->
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
