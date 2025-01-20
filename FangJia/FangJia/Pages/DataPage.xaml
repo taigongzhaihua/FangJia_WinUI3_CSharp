@@ -5,16 +5,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="using:System"
     mc:Ignorable="d"
-    Background="{StaticResource ControlAltFillColorTransparentBrush}">
+    Background="{ThemeResource  ControlAltFillColorTransparentBrush}">
 
     <Grid>
-        <NavigationView PaneDisplayMode="Top">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="方剂" />
-                <NavigationViewItem Content="药物" />
-            </NavigationView.MenuItems>
-            <Frame x:Name="DataFrame"/>
-        </NavigationView>
+        <GridView x:Name="collection" IsItemClickEnabled="True" HorizontalAlignment="Center" MaxWidth="1400"
+                  ItemsSource="{x:Bind items}">
+            <GridView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
+                    <Style.Setters>
+                        <Setter Property="Margin" Value="12" />
+                    </Style.Setters>
+                </Style>
+            </GridView.ItemContainerStyle>
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid x:Name="connectedElement" Height="250" Width="190" AutomationProperties.Name="{Binding}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource SystemAccentColor}" Height="100">
+                            <TextBlock Text="Item" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource TitleTextBlockStyle}" />
+                        </Grid>
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" Grid.Row="1">
+                            <TextBlock Text="{Binding}" Margin="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </Page>

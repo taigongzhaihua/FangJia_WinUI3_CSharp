@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+using FangJia.Common;
 using FangJia.Pages;
 using Microsoft.UI;
 using Microsoft.UI.Input;
@@ -6,11 +6,16 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Graphics;
+using CasePage = FangJia.Pages.CasePage;
+using ClassicPage = FangJia.Pages.ClassicPage;
+using DrugPage = FangJia.Pages.DrugPage;
+
 #pragma warning disable CA1416
 
 
@@ -42,6 +47,7 @@ public sealed partial class MainWindow
         Activated += MainWindow_Activated;
         AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
         AppTitleBar.Loaded += AppTitleBar_Loaded;
+        ContentFrame.Navigated += ContentFrame_Navigated;
 
         ExtendsContentIntoTitleBar = true;
         if (ExtendsContentIntoTitleBar)
@@ -61,6 +67,73 @@ public sealed partial class MainWindow
             ((SolidColorBrush)Application.Current.Resources["WindowCaptionForeground"]).Color;
 
         _appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+    }
+
+    private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+    {
+        if (sender is not Frame frame) return;
+        var type = frame.Content.GetType().ToString().Replace("FangJia.Pages.", "");
+
+        switch (NavigationViewControl.SelectedItem)
+        {
+            case CategoryBase selectedItem:
+                {
+                    var item = selectedItem as Category;
+                    var selectedPath = item?.Path;
+                    if (type == "SettingsPage")
+                    {
+                        NavigationViewControl.SelectedItem = NavigationViewControl.SettingsItem;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(selectedPath) && !type.Contains(selectedPath))
+                    {
+                        NavigationViewControl.SelectedItem = ViewModel.CategoryList[type.Replace("Page", "")];
+                    }
+
+                    break;
+                }
+            case NavigationViewItem { Content: "设置" }:
+                {
+                    if (!type.Contains("SettingsPage"))
+                    {
+                        NavigationViewControl.SelectedItem = ViewModel.CategoryList[type.Replace("Page", "")];
+                    }
+
+                    break;
+                }
+        }
+
+        ViewModel.PageHeader.Clear();
+        switch (type)
+        {
+            case "HomePage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Home"] as Category)!);
+                break;
+            case "DataPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Data"] as Category)!);
+                break;
+            case "AboutPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["About"] as Category)!);
+                break;
+            case "FormulationPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Data"] as Category)!);
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Formulation"] as Category)!);
+                break;
+            case "DrugPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Data"] as Category)!);
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Drug"] as Category)!);
+                break;
+            case "ClassicPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Data"] as Category)!);
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Classic"] as Category)!);
+                break;
+            case "CasePage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Data"] as Category)!);
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Case"] as Category)!);
+                break;
+            case "SettingsPage":
+                ViewModel.PageHeader.Add((ViewModel.CategoryList["Settings"] as Category)!);
+                break;
+        }
     }
 
     private void AppTitleBar_Loaded(object sender, RoutedEventArgs e)
@@ -101,15 +174,15 @@ public sealed partial class MainWindow
         // 获取 PersonPicture 控件周围的矩形。
         var transform = PersonPic.TransformToVisual(null);
         var bounds = transform.TransformBounds(new Rect(0, 0,
-                                                    PersonPic.ActualWidth,
-                                                    PersonPic.ActualHeight));
+            PersonPic.ActualWidth,
+            PersonPic.ActualHeight));
         var personPicRect = GetRect(bounds, scaleAdjustment);
 
         // 获取全屏按钮周围的矩形。
         transform = FullScreenButton.TransformToVisual(null);
         bounds = transform.TransformBounds(new Rect(0, 0,
-                                                    FullScreenButton.ActualWidth,
-                                                    FullScreenButton.ActualHeight));
+            FullScreenButton.ActualWidth,
+            FullScreenButton.ActualHeight));
         var fullScreenRect = GetRect(bounds, scaleAdjustment);
 
         var rectArray = new[] { personPicRect, fullScreenRect };
@@ -120,11 +193,11 @@ public sealed partial class MainWindow
     }
 
     private static RectInt32 GetRect(Rect bounds, double scale) => new(
-            _X: (int)Math.Round(bounds.X * scale),
-            _Y: (int)Math.Round(bounds.Y * scale),
-            _Width: (int)Math.Round(bounds.Width * scale),
-            _Height: (int)Math.Round(bounds.Height * scale)
-        );
+        _X: (int)Math.Round(bounds.X * scale),
+        _Y: (int)Math.Round(bounds.Y * scale),
+        _Width: (int)Math.Round(bounds.Width * scale),
+        _Height: (int)Math.Round(bounds.Height * scale)
+    );
 
     private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
     {
@@ -186,48 +259,49 @@ public sealed partial class MainWindow
     {
         if (args.IsSettingsSelected)
         {
+            if (ContentFrame.CurrentSourcePageType == GetType("SettingsPage")) return;
             ContentFrame.Navigate(typeof(SettingsPage));
-            ViewModel.PageHead.Clear();
-            ViewModel.PageHead.Add(new Folder { Name = "设置" });
             return;
         }
-        var selectedTag = args.SelectedItemContainer.Tag as string;
-        if (string.IsNullOrEmpty(selectedTag)) return;
-        switch (selectedTag)
-        {
-            case "HomePage":
-                ContentFrame.Navigate(typeof(HomePage));
-                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
-                ViewModel.PageHead.Add(new Folder { Name = "首页" });
-                break;
-            case "DataPage":
-                ContentFrame.Navigate(typeof(DataPage));
-                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
-                ViewModel.PageHead.Add(new Folder { Name = "数据" });
-                break;
-            case "AboutPage":
-                ContentFrame.Navigate(typeof(AboutPage));
-                if (ViewModel.PageHead.Count > 0) ViewModel.PageHead.Clear();
-                ViewModel.PageHead.Add(new Folder { Name = "关于" });
-                break;
-        }
+        if (args.SelectedItem is not Category selectedCategory) return;
+        var path = selectedCategory.Path;
+        if (string.IsNullOrEmpty(path)) return;
+        var type = GetType(path);
+        if (ContentFrame.CurrentSourcePageType == type) return;
+        ContentFrame.Navigate(type);
     }
 
+    private static Type GetType(string? path)
+    {
+        return path switch
+        {
+            "HomePage" => typeof(HomePage),
+            "DataPage" => typeof(DataPage),
+            "AboutPage" => typeof(AboutPage),
+            "FormulationPage" => typeof(FormulationPage),
+            "DrugPage" => typeof(DrugPage),
+            "ClassicPage" => typeof(ClassicPage),
+            "CasePage" => typeof(CasePage),
+            "SettingsPage" => typeof(SettingsPage),
+            _ => throw new NotImplementedException()
+        };
+    }
     private void NavigationView_Loaded(object sender, RoutedEventArgs e)
     {
         if (sender is NavigationView navigationView)
         {
-            navigationView.SelectedItem = navigationView.MenuItems[0];
+            navigationView.SelectedItem = ViewModel.CategoryList["Home"];
         }
     }
     // 切换窗口显示模式
-    private void FullScreen(object sender, RoutedEventArgs e)
+    private void FullScreen(object sender, RoutedEventArgs _)
     {
         _appWindow.SetPresenter(ViewModel.IsFullScreen
             ? AppWindowPresenterKind.Default
             : AppWindowPresenterKind.FullScreen);
+
     }
-    private void OnPaneDisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
+    private void OnPaneDisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs _)
     {
         AppTitleBar.Margin = sender.PaneDisplayMode switch
         {
@@ -239,11 +313,13 @@ public sealed partial class MainWindow
     }
     private void BreadcrumbBar2_ItemClicked(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
     {
-        var items = PageTitleBreadcrumbBar.ItemsSource as ObservableCollection<Folder>;
+        var items = PageTitleBreadcrumbBar.ItemsSource as ObservableCollection<Category>;
         for (var i = items!.Count - 1; i >= args.Index + 1; i--)
         {
             items.RemoveAt(i);
         }
+
+        ContentFrame.Navigate(GetType(items[args.Index].Path));
     }
 
     private void NavigationViewControl_OnBackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
@@ -255,17 +331,3 @@ public sealed partial class MainWindow
         }
     }
 }
-#pragma warning disable MVVMTK0045
-internal partial class MainPageViewModel : ObservableObject
-{
-    [ObservableProperty] private bool _isFullScreen;
-    [ObservableProperty] private ObservableCollection<Folder> _pageHead = [];
-}
-#pragma warning restore MVVMTK0045
-
-public class Folder
-{
-    public string? Name { get; set; }
-}
-
-

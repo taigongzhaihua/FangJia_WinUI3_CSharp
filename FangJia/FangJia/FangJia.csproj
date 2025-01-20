@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.0.1" />
 	<PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -14,8 +14,9 @@
 		  0108;   <!-- 'x' hides inherited member 'y'. Use the new keyword if hiding was intended. -->
 		  8305;    <!-- 'x' is for evaluation purposes only and is subject to change or removal in future updates. -->
 		  NU1701;
-          IDE0079;
-          NU1702;
+		  IDE0079;
+		  NU1702;
+		  MVVMTK0045;
 
 	  </NoWarn>
 	  <MSBuildWarningsAsMessages>
@@ -27,6 +28,9 @@
     <None Remove="Assets\StoreLogo.ico" />
     <None Remove="Home\HomePage.xaml" />
     <None Remove="Pages\DataPage.xaml" />
+    <None Remove="Pages\Data\CasePage.xaml" />
+    <None Remove="Pages\Data\ClassicPage.xaml" />
+    <None Remove="Pages\Data\DrugPage.xaml" />
     <None Remove="Settings\SettingPage.xaml" />
   </ItemGroup>
 
@@ -35,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ColorCode.WinUI" Version="2.0.15" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.2.241112-preview1" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.241112-preview1" />
@@ -51,6 +54,15 @@
     <Content Update="Assets\StoreLogo.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+    <Page Update="Pages\Data\CasePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\Data\ClassicPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\Data\DrugPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\DataPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -74,11 +86,21 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Pages\Data\FormulationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
     <!-- Publish Properties -->
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <ApplicationIcon>Assets\StoreLogo.ico</ApplicationIcon>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PublishAot>False</PublishAot>
+    <Title>方家</Title>
   </PropertyGroup>
 </Project>

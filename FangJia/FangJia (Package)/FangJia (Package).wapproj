@@ -32,8 +32,7 @@
   <PropertyGroup>
     <WapProjPath Condition="'$(WapProjPath)'==''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
     <!-- <PathToXAMLWinRTImplementations>FangJia\</PathToXAMLWinRTImplementations> -->
-    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    
     <NoWarn>
 	    0108;   <!-- 'x' hides inherited member 'y'. Use the new keyword if hiding was intended. -->
 	    8305;    <!-- 'x' is for evaluation purposes only and is subject to change or removal in future updates. -->
@@ -47,6 +46,7 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>dc310aec-9517-432c-a082-cb540ec18ff5</ProjectGuid>
+	  <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <AssetTargetFallback>net8.0-windows$(TargetPlatformVersion);$(AssetTargetFallback)</AssetTargetFallback>
@@ -151,7 +151,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250109001-experimental2" />
   </ItemGroup>

@@ -6,12 +6,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:l="using:FangJia"
         xmlns:converters="using:FangJia.Converters"
+        xmlns:common="using:FangJia.Common"
         mc:Ignorable="d"
         Title="方家">
 
     <Grid x:Name="MainGrid">
+        <Grid.Resources>
+            <common:MenuItemTemplateSelector x:Key="Selector" >
+                <common:MenuItemTemplateSelector.ItemTemplate>
+                    <DataTemplate x:DataType="common:Category">
+                        <NavigationViewItem 
+                            Content="{x:Bind Name}"
+                            ToolTipService.ToolTip="{x:Bind Tooltip}"
+                            Tag="{x:Bind Path}"
+                            MenuItemsSource="{x:Bind Children}">
+                            <NavigationViewItem.Icon>
+                                <FontIcon Glyph="{x:Bind Glyph}"></FontIcon>
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </DataTemplate>
+                </common:MenuItemTemplateSelector.ItemTemplate>
+            </common:MenuItemTemplateSelector>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -72,7 +89,7 @@
                     Click="FullScreen"
                     x:Name="FullScreenButton"
                     ToolTipService.ToolTip="全屏">
-                <FontIcon Glyph="&#xE740;" FontSize="14" />
+                <FontIcon Glyph="&#xE740;" FontSize="10" />
             </Button>
         </Grid>
 
@@ -81,13 +98,17 @@
                         IsPaneToggleButtonVisible="True"
                         IsSettingsVisible="True"
                         IsTitleBarAutoPaddingEnabled="True"
+                        IsTabStop="False" 
                         SelectionChanged="NavigationView_SelectionChanged"
                         Loaded="NavigationView_Loaded"
                         Grid.Column="0" Grid.ColumnSpan="2"
                         DisplayModeChanged="OnPaneDisplayModeChanged"
                         IsPaneOpen="False"
                         IsBackEnabled="{Binding ElementName=ContentFrame,Path=CanGoBack}"
-                        BackRequested="NavigationViewControl_OnBackRequested">
+                        BackRequested="NavigationViewControl_OnBackRequested"
+                        MenuItemsSource="{x:Bind ViewModel.MenuFolders, Mode=OneWay}"
+                        FooterMenuItemsSource="{x:Bind ViewModel.FootFolders, Mode=OneWay}"
+                        MenuItemTemplateSelector="{StaticResource Selector}">
             <NavigationView.Resources>
                 <!--  This top margin is the height of the custom titleBar  -->
                 <!-- ReSharper disable Xaml.RedundantResource -->
@@ -99,6 +120,7 @@
                 <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,0</CornerRadius>
                 <!-- ReSharper restore Xaml.RedundantResource -->
                 <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
             </NavigationView.Resources>
             <NavigationView.AutoSuggestBox>
                 <AutoSuggestBox
@@ -108,7 +130,8 @@
                     x:FieldModifier="public"
                     KeyboardAcceleratorPlacementMode="Hidden"
                     PlaceholderText="Search"
-                    QueryIcon="Find">
+                    QueryIcon="Find"
+                    >
                     <AutoSuggestBox.KeyboardAccelerators>
                         <KeyboardAccelerator
                             Key="F"
@@ -116,23 +139,14 @@
                     </AutoSuggestBox.KeyboardAccelerators>
                 </AutoSuggestBox>
             </NavigationView.AutoSuggestBox>
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="首页"
-                                    Icon="Home"
-                                    Tag="HomePage" />
-                <NavigationViewItem Content="数据"
-                                    Icon="Document"
-                                    Tag="DataPage">
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
             <NavigationView.Header>
                 <Grid>
                     <BreadcrumbBar x:Name="PageTitleBreadcrumbBar"
-                                   ItemsSource="{x:Bind ViewModel.PageHead}"
+                                   ItemsSource="{x:Bind ViewModel.PageHeader,Mode=TwoWay}"
                                    ItemClicked="BreadcrumbBar2_ItemClicked"
                                    VerticalAlignment="Center">
                         <BreadcrumbBar.ItemTemplate>
-                            <DataTemplate x:DataType="l:Folder">
+                            <DataTemplate x:DataType="common:Category">
                                 <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding Name}">
                                     <BreadcrumbBarItem.ContentTemplate>
                                         <DataTemplate>
@@ -144,19 +158,7 @@
                         </BreadcrumbBar.ItemTemplate>
                     </BreadcrumbBar>
                 </Grid>
-
             </NavigationView.Header>
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="关于"
-                                    Tag="AboutPage">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE946;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItemSeparator />
-            </NavigationView.FooterMenuItems>
-
-
             <Frame x:Name="ContentFrame" />
         </NavigationView>
     </Grid>
