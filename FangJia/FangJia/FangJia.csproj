@@ -48,6 +48,7 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250109001-experimental2" />
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
 
   <ItemGroup>

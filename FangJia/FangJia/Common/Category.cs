@@ -19,3 +19,4 @@ public class Header : CategoryBase
 }
 
 public class Separator : CategoryBase;
+

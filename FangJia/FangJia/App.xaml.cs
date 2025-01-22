@@ -1,4 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿using FangJia.Helpers;
+using FangJia.ViewModel;
+using Microsoft.UI.Xaml;
+using System;
+using System.Reflection;
+using Unity;
+using Unity.Lifetime;
+
 #pragma warning disable CA1416
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,6 +24,12 @@ public partial class App
     public App()
     {
         InitializeComponent();
+
+        // 步骤4：初始化服务
+        var container = new UnityContainer(); // 创建一个Unity容器
+        RegisterServices(container);          // 注册服务
+
+        Locator.Initialize(container);
     }
 
     /// <summary>
@@ -25,10 +38,28 @@ public partial class App
     /// <param name="args">有关启动请求和过程的详细信息。</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        _window = new MainWindow();
-        _window.Activate();
+
+        Window = new MainWindow();
+        WindowHelper.TrackWindow(Window);
+        Window.Activate();
+
 
     }
 
-    private Window? _window;
+    private static void RegisterServices(UnityContainer container)
+    {
+        container.RegisterType<MainPageViewModel>(new ContainerControlledLifetimeManager());
+        container.RegisterType<DataViewModel>(new ContainerControlledLifetimeManager());
+    }
+
+    public Window? Window { get; private set; }
+
+    public static TEnum GetEnum<TEnum>(string? text) where TEnum : struct
+    {
+        if (!typeof(TEnum).GetTypeInfo().IsEnum)
+        {
+            throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
+        }
+        return (TEnum)Enum.Parse(typeof(TEnum), text);
+    }
 }

@@ -30,7 +30,7 @@ public partial class MenuItemTemplateSelector : DataTemplateSelector
             _ => ItemTemplate
         };
     }
-
+#if WINDOWS10_0_17763_0_OR_GREATER
     internal DataTemplate? HeaderTemplate = (DataTemplate)XamlReader.Load(
         """
         <DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -44,4 +44,5 @@ public partial class MenuItemTemplateSelector : DataTemplateSelector
                             <NavigationViewItemSeparator />
                           </DataTemplate>
         """);
+#endif
 }
