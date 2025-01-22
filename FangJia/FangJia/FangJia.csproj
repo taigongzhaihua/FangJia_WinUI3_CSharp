@@ -52,9 +52,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Assets\StoreLogo.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Update="Properties\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <Page Update="Pages\Data\CasePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -93,6 +105,11 @@
     </Page>
   </ItemGroup>
 
+  <PropertyGroup Label="Globals">
+    <WebView2UseWinRT>True</WebView2UseWinRT>
+    <WebView2UseDispatchAdapter>True</WebView2UseDispatchAdapter>
+  </PropertyGroup>
+
     <!-- Publish Properties -->
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
@@ -103,5 +120,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PublishAot>False</PublishAot>
     <Title>方家</Title>
+    <UseWindowsForms>False</UseWindowsForms>
   </PropertyGroup>
 </Project>

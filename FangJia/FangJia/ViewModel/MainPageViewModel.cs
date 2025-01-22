@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using FangJia.Common;
-using FangJia.Helpers;
 using System.Collections.ObjectModel;
+using Helper = FangJia.Helpers.Helper;
 
 namespace FangJia.ViewModel;
 
@@ -14,23 +14,23 @@ public partial class MainPageViewModel : ObservableObject
 
     public MainPageViewModel()
     {
-        var dataCategory = Helper.CategoryList["Data"] as Category;
+        var dataCategory = Helper.Categorizes["Data"] as Category;
         dataCategory!.Children =
         [
-            Helper.CategoryList["Formulation"],
-            Helper.CategoryList["Drug"],
-            Helper.CategoryList["Classic"],
-            Helper.CategoryList["Case"]
+            Helper.Categorizes["Formulation"],
+            Helper.Categorizes["Drug"],
+            Helper.Categorizes["Classic"],
+            Helper.Categorizes["Case"]
         ];
         MenuFolders =
         [
-            Helper.CategoryList["Home"],
+            Helper.Categorizes["Home"],
             dataCategory
         ];
         FootFolders =
         [
-            Helper.CategoryList["About"],
-            new Separator()
+            Helper.Categorizes["About"],
+            Helper.Categorizes["Separator"]
         ];
     }
 

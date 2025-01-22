@@ -32,7 +32,6 @@
   <PropertyGroup>
     <WapProjPath Condition="'$(WapProjPath)'==''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
     <!-- <PathToXAMLWinRTImplementations>FangJia\</PathToXAMLWinRTImplementations> -->
-    
     <NoWarn>
 	    0108;   <!-- 'x' hides inherited member 'y'. Use the new keyword if hiding was intended. -->
 	    8305;    <!-- 'x' is for evaluation purposes only and is subject to change or removal in future updates. -->
@@ -46,7 +45,7 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>dc310aec-9517-432c-a082-cb540ec18ff5</ProjectGuid>
-	  <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <AssetTargetFallback>net8.0-windows$(TargetPlatformVersion);$(AssetTargetFallback)</AssetTargetFallback>
@@ -55,7 +54,7 @@
     <EntryPointProjectUniqueName>..\FangJia\FangJia.csproj</EntryPointProjectUniqueName>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <PackageCertificateThumbprint>C1D56FC9AF6570BD491D1E8F52B0F74FD962E4B1</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>FFD86EAFA2078F3A3F7ACD2D1B1D6B35F7EABF5A</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>

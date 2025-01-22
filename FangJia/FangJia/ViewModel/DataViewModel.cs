@@ -10,10 +10,10 @@ namespace FangJia.ViewModel
         [ObservableProperty]
         private ObservableCollection<Category> _data =
         [
-            (Helper.CategoryList["Formulation"] as Category)!,
-            (Helper.CategoryList["Drug"] as Category)!,
-            (Helper.CategoryList["Classic"] as Category)!,
-            (Helper.CategoryList["Case"] as Category)!
+            (Helper.Categorizes["Formulation"] as Category)!,
+            (Helper.Categorizes["Drug"] as Category)!,
+            (Helper.Categorizes["Classic"] as Category)!,
+            (Helper.Categorizes["Case"] as Category)!
         ];
     }
 }
