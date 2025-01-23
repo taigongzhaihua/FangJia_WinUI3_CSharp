@@ -57,7 +57,7 @@ namespace FangJia.Helpers
         }
 
         // Confirmation of Action
-        static public void AnnounceActionForAccessibility(UIElement ue, string annoucement, string activityID)
+        static public void AnnounceActionForAccessibility(UIElement? ue, string annoucement, string activityID)
         {
             var peer = FrameworkElementAutomationPeer.FromElement(ue);
             peer.RaiseNotificationEvent(AutomationNotificationKind.ActionCompleted,

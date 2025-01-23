@@ -1,5 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Windows.Storage;
+using WinRT;
 
 namespace FangJia.Helpers
 {
@@ -9,6 +14,7 @@ namespace FangJia.Helpers
     public static class ThemeHelper
     {
         private const string SelectedAppThemeKey = "SelectedAppTheme";
+        private const string IsMicaThemeKey = "IsMicaTheme";
 
         /// <summary>
         /// Gets the current actual theme of the app based on the requested theme of the
@@ -29,7 +35,7 @@ namespace FangJia.Helpers
                     }
                 }
 
-                return App.GetEnum<ElementTheme>(App.Current.RequestedTheme.ToString());
+                return App.GetEnum<ElementTheme>(Application.Current.RequestedTheme.ToString());
             }
         }
 
@@ -40,7 +46,7 @@ namespace FangJia.Helpers
         {
             get
             {
-                foreach (Window window in WindowHelper.ActiveWindows)
+                foreach (var window in WindowHelper.ActiveWindows)
                 {
                     if (window.Content is FrameworkElement rootElement)
                     {
@@ -52,7 +58,7 @@ namespace FangJia.Helpers
             }
             set
             {
-                foreach (Window window in WindowHelper.ActiveWindows)
+                foreach (var window in WindowHelper.ActiveWindows)
                 {
                     if (window.Content is FrameworkElement rootElement)
                     {
@@ -67,17 +73,39 @@ namespace FangJia.Helpers
             }
         }
 
-        public static void Initialize()
+        public static bool IsMicaTheme
         {
-            if (NativeHelper.IsAppPackaged)
+            get
             {
-                var savedTheme = ApplicationData.Current.LocalSettings.Values[SelectedAppThemeKey]?.ToString();
-
-                if (savedTheme != null)
+                var x = ApplicationData.Current.LocalSettings.Values[IsMicaThemeKey]?.As<bool>();
+                return x ?? false;
+            }
+            set
+            {
+                if (NativeHelper.IsAppPackaged)
                 {
-                    RootTheme = App.GetEnum<ElementTheme>(savedTheme);
+                    ApplicationData.Current.LocalSettings.Values[IsMicaThemeKey] = value;
                 }
             }
+        }
+
+        public static void Initialize()
+        {
+            if (!NativeHelper.IsAppPackaged) return;
+            IsMicaTheme = ApplicationData.Current.LocalSettings.Values[IsMicaThemeKey]?.As<bool>() ?? false;
+
+            if (IsMicaTheme)
+            {
+                SetWindowBackground();
+            }
+
+            var savedTheme = ApplicationData.Current.LocalSettings.Values[SelectedAppThemeKey]?.ToString();
+
+            if (savedTheme != null)
+            {
+                RootTheme = App.GetEnum<ElementTheme>(savedTheme);
+            }
+
         }
 
         public static bool IsDarkTheme()
@@ -86,7 +114,31 @@ namespace FangJia.Helpers
             {
                 return Application.Current.RequestedTheme == ApplicationTheme.Dark;
             }
+
             return RootTheme == ElementTheme.Dark;
+        }
+
+        public static void SetWindowBackground()
+        {
+            foreach (var window in WindowHelper.ActiveWindows)
+            {
+                var panel = window.Content as Panel;
+                if (IsMicaTheme)
+                {
+                    window.SystemBackdrop = new MicaBackdrop
+                    {
+                        Kind = MicaKind.Base
+                    };
+                    panel!.Background = new SolidColorBrush(Colors.Transparent);
+                }
+                else
+                {
+                    window.SystemBackdrop = null;
+                    panel!.Background = panel.ActualTheme == ElementTheme.Dark
+                        ? new SolidColorBrush(Colors.Black)
+                        : new SolidColorBrush(Colors.White);
+                }
+            }
         }
     }
 }

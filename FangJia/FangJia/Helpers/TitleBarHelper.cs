@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 
 namespace FangJia.Helpers
 {
@@ -8,20 +7,18 @@ namespace FangJia.Helpers
     internal class TitleBarHelper
     {
         // workaround as Appwindow titlebar doesn't update caption button colors correctly when changed while app is running
+        // 解决方法，因为在应用程序运行时更改时，AppWindow 标题栏不会正确更新标题按钮颜色
         // https://task.ms/44172495
+
         public static Windows.UI.Color ApplySystemThemeToCaptionButtons(Window window)
         {
-            var mainWindow = (Application.Current as App)?.Window as MainWindow;
-            var frame = (mainWindow?.Content as FrameworkElement)?.FindName("MainGrid") as FrameworkElement;
-            var color = frame?.ActualTheme == ElementTheme.Dark ? Colors.White : Colors.Black;
+            var color = ThemeHelper.ActualTheme == ElementTheme.Dark ? Colors.White : Colors.Black;
             SetCaptionButtonColors(window, color);
             return color;
         }
 
         public static void SetCaptionButtonColors(Window window, Windows.UI.Color color)
         {
-            var res = Application.Current.Resources;
-            res["WindowCaptionForeground"] = new SolidColorBrush() { Color = color };
             window.AppWindow.TitleBar.ButtonForegroundColor = color;
             window.AppWindow.TitleBar.ForegroundColor = color;
         }

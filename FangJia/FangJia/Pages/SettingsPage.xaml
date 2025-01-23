@@ -12,18 +12,32 @@
 
     <Grid>
         <StackPanel Margin="24">
-            <controls:SettingsCard Description="选择应用主题" Header="应用主题">
+            <TextBlock Text="外观"
+                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                       Margin="0,12"/>
+            <controls:SettingsCard Description="选择应用主题" Header="应用主题"
+                                   CornerRadius="8,8,0,0">
                 <controls:SettingsCard.HeaderIcon>
                     <FontIcon Glyph="&#xE790;" />
                 </controls:SettingsCard.HeaderIcon>
                 <ComboBox
                     x:Name="ThemeMode"
                     AutomationProperties.AutomationId="themeModeComboBox"
-                    SelectionChanged="themeMode_SelectionChanged">
+                    SelectionChanged="themeMode_SelectionChanged"
+                    SelectedValuePath="Tag"
+                    SelectedValue="{x:Bind ViewModel.ThemeMode,Mode=TwoWay}">
                     <ComboBoxItem Content="亮色" Tag="Light" />
                     <ComboBoxItem Content="暗色" Tag="Dark" />
                     <ComboBoxItem Content="跟随系统" Tag="Default" />
                 </ComboBox>
+            </controls:SettingsCard>
+            <controls:SettingsCard CornerRadius="0,0,8,8"
+                                   Description="选择是否启用Mica效果" Header="启用Mica"
+                                   >
+                <controls:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xF354;" />
+                </controls:SettingsCard.HeaderIcon>
+                <ToggleSwitch IsOn="{x:Bind ViewModel.IsMicaTheme,Mode=TwoWay}"/>
             </controls:SettingsCard>
         </StackPanel>
     </Grid>

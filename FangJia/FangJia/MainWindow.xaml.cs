@@ -318,11 +318,18 @@ public sealed partial class MainWindow
 
     private void MainGrid_OnActualThemeChanged(FrameworkElement sender, object args)
     {
-        // MainGrid.Background = MainGrid.ActualTheme == ElementTheme.Dark
-        //     ? new SolidColorBrush(Colors.Black)
-        //     : new SolidColorBrush(Colors.White);
-        TitleBarTextBlock.Foreground = MainGrid.ActualTheme == ElementTheme.Dark
-            ? new SolidColorBrush(Colors.White)
-            : new SolidColorBrush(Colors.Black);
+        if (!ThemeHelper.IsMicaTheme)
+        {
+            ThemeHelper.SetWindowBackground();
+
+        }
+        TitleBarHelper.ApplySystemThemeToCaptionButtons(this);
     }
+
+    // private void TitleBarTextBlock_OnActualThemeChanged(FrameworkElement sender, object args)
+    // {
+    //     TitleBarTextBlock.Foreground = TitleBarTextBlock.ActualTheme == ElementTheme.Dark
+    //         ? new SolidColorBrush(Colors.White)
+    //         : new SolidColorBrush(Colors.Black);
+    // }
 }

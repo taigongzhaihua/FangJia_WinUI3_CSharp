@@ -10,9 +10,6 @@
         xmlns:common="using:FangJia.Common"
         mc:Ignorable="d"
         Title="方家">
-    <Window.SystemBackdrop>
-        <MicaBackdrop Kind="Base"/>
-    </Window.SystemBackdrop>
     <Window.Content>
     <Grid x:Name="MainGrid" 
           ActualThemeChanged="MainGrid_OnActualThemeChanged"
@@ -82,7 +79,9 @@
                        FontWeight="Medium"
                        Margin="8,0,0,0"
                        Grid.Column="2"
-                       VerticalAlignment="Center">
+                       VerticalAlignment="Center"
+                       Foreground="{ThemeResource WindowCaptionForeground}"
+                       >
             </TextBlock>
             <PersonPicture x:Name="PersonPic"
                            Grid.Column="5"
@@ -149,16 +148,16 @@
                                    ItemsSource="{x:Bind ViewModel.PageHeader,Mode=TwoWay}"
                                    ItemClicked="BreadcrumbBar2_ItemClicked"
                                    VerticalAlignment="Center"
-                                   BackgroundSizing="InnerBorderEdge">
+                                   BackgroundSizing="InnerBorderEdge"
+                                   CharacterSpacing="10">
                         <BreadcrumbBar.ItemTemplate>
                             <DataTemplate x:DataType="common:Category">
                                 <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding Name}"
                                                    VerticalAlignment="Center">
                                     <BreadcrumbBarItem.ContentTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Name}" Style="{StaticResource TitleTextBlockStyle}"
-                                                       VerticalAlignment="Center"
-                                                       FontSize="20"/>
+                                            <TextBlock Text="{Binding Name}" Style="{ThemeResource SubtitleTextBlockStyle}"
+                                                       VerticalAlignment="Center"/>
                                         </DataTemplate>
                                     </BreadcrumbBarItem.ContentTemplate>
                                 </BreadcrumbBarItem>

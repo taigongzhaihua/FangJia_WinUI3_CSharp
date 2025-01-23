@@ -43,6 +43,8 @@ public partial class App
         WindowHelper.TrackWindow(Window);
         Window.Activate();
 
+        ThemeHelper.Initialize();
+        TitleBarHelper.ApplySystemThemeToCaptionButtons(Window);
 
     }
 
@@ -50,6 +52,7 @@ public partial class App
     {
         container.RegisterType<MainPageViewModel>(new ContainerControlledLifetimeManager());
         container.RegisterType<DataViewModel>(new ContainerControlledLifetimeManager());
+        container.RegisterType<SettingsViewModel>(new ContainerControlledLifetimeManager());
     }
 
     public Window? Window { get; private set; }
@@ -60,6 +63,6 @@ public partial class App
         {
             throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
         }
-        return (TEnum)Enum.Parse(typeof(TEnum), text);
+        return (TEnum)Enum.Parse(typeof(TEnum), text!);
     }
 }
